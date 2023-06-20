@@ -44,3 +44,4 @@ jobs:
             LANG=ru_RU.CP1251 yamllint . || {
               echo "XFAIL: ru_RU.CP1251"
               }
+          fi
