@@ -1,0 +1,33 @@
+---
+# vim:set sw=2 ts=8 et fileencoding=utf8:
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright © 2023, Serguei E. Leontiev (leo@sai.msu.ru)
+#
+name: Python yamllint test
+
+on: push  # yamllint disable-line rule:truthy
+
+jobs:
+  lint:
+    strategy:
+      fail-fast: false  # TODO true
+      matrix:
+        os: ["macos", "ubuntu", "windows"]
+
+    runs-on: ${{ matrix.os }}-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint YAML files
+        run: |
+          python -c "import locale; \
+                     print(locale.getlocale(), \
+                           locale.getpreferredencoding())"
+          yamllint .
