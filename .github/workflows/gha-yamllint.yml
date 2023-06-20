@@ -49,7 +49,7 @@ jobs:
             echo "locale -a"
             locale -a
             echo "locale"
-            locale 
+            locale
             echo "env"
             env
             export LANG=ru_RU.CP1251
