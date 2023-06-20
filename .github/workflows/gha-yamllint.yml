@@ -25,23 +25,43 @@ jobs:
       - name: Install yamllint
         run: pip install yamllint
 
-      - name: Lint YAML files
+      - name: Lint .github YAML files
+        run: yamllint .github
+
+      - name: Test greek.yml
         run: |
           python -c "import locale; \
                      print(locale.getlocale(), \
                            locale.getpreferredencoding())"
 
           if [ "${{ matrix.os }}" == "windows" ] ; then
-            yamllint . || {
+            if yamllint greek.yml ; then
               echo "XFAIL: ('English_United States', '1252') cp1252"
-              }
+            else
+              echo "XPASS: windows locales"
+              exit 10
+            fi
           else
-            yamllint .
+            yamllint greek.yml
+            if [ "${{ matrix.os }}" == "ubuntu" ] ; then
+              sudo localedef -f CP1251 -i ru_RU ru_RU.CP1251
+            fi
+            echo "locale -a"
             locale -a
-            LANG=ru_RU.CP1251 python -c "import locale; \
+            echo "locale"
+            locale 
+            echo "env"
+            env
+            export LANG=ru_RU.CP1251
+            echo "locale 2"
+            locale
+
+            python -c "import locale; \
                        print(locale.getlocale(), \
                              locale.getpreferredencoding())"
-            LANG=ru_RU.CP1251 yamllint . || {
+            if yamllint greek.yml ; then
               echo "XFAIL: ru_RU.CP1251"
-              }
+            else
+              echo "XPASS: ru_RU.CP1251"
+            fi
           fi
