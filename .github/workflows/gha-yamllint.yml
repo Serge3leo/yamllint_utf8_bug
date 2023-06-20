@@ -30,4 +30,17 @@ jobs:
           python -c "import locale; \
                      print(locale.getlocale(), \
                            locale.getpreferredencoding())"
-          yamllint .
+
+          if [ "${{ matrix.os }}" == "windows" ] ; then
+            yamllint . || {
+              echo "XFAIL: ('English_United States', '1252') cp1252"
+              }
+          else
+            yamllint .
+            locale -a
+            LANG=ru_RU.CP1251 python -c "import locale; \
+                       print(locale.getlocale(), \
+                             locale.getpreferredencoding())"
+            LANG=ru_RU.CP1251 yamllint . || {
+              echo "XFAIL: ru_RU.CP1251"
+              }
