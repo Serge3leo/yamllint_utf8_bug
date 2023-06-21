@@ -110,9 +110,9 @@ jobs:
               workaround="LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8"
               ;;
           esac
-          $workaround yamllint greek.yml
+          eval $workaround yamllint greek.yml
           echo "OK: workaround greek.yml"
-          if $workaround yamllint cp1252.yml ; then
+          if eval $workaround yamllint cp1252.yml ; then
             echo "FAIL: workaround cp1252.yml"
           else
             echo "OK: workaround cp1252.yml"
