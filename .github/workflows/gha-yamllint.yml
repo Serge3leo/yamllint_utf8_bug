@@ -93,4 +93,28 @@ jobs:
               exit 50
             fi
           fi
+
+      - name: Workaround
+        run: |
+          export PYTHONUTF8=0
+          export LANG=C
+          export LC_ALL=C
+          case "${{ matrix.os }}" in
+            "windows")
+              workaround="PYTHONUTF8=1"  # WARNING: Python 3.7+ only
+              ;;
+            "ubuntu")
+              workaround="LANG=en_US.utf8 LC_ALL=en_US.utf8"
+              ;;
+            "macos")
+              workaround="LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8"
+              ;;
+          esac
+          $workaround yamllint greek.yml
+          echo "OK: workaround greek.yml"
+          if $workaround yamllint cp1252.yml ; then
+            echo "FAIL: workaround cp1252.yml"
+          else
+            echo "OK: workaround cp1252.yml"
+          fi
 ...
