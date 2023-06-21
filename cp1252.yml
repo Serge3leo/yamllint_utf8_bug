@@ -1,0 +1,8 @@
+---
+# vim:set sw=2 ts=8 et fileencoding=cp1252:
+# SPDX-License-Identifier: BSD-3-Clause
+#
+capitals:
+  1: Reykjavík
+  2: Tórshavn
+...

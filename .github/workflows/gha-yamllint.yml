@@ -28,7 +28,7 @@ jobs:
       - name: Lint .github YAML files
         run: yamllint .github
 
-      - name: Test greek.yml
+      - name: False positive greek.yml
         run: |
           python -c "import locale; \
                      print(locale.getlocale(), \
@@ -60,3 +60,30 @@ jobs:
               echo "XFAIL: ru_RU.CP1251"
             fi
           fi
+
+        - name: False negative cp1252.yml
+          run: |
+            if [ "${{ matrix.os }}" == "windows" ] ; then
+              if yamllint cp1252.yml ; then
+                echo "XFAIL: ('English_United States', '1252') cp1252"
+              else
+                echo "XPASS: windows locales"
+                exit 30
+              fi
+            else
+              if yamllint cp1252.yml ; then
+                echo "FAIL: cp1252.yml on macOS/Linux UTF-8"
+                exit 40
+              fi
+              if [ "${{ matrix.os }}" == "ubuntu" ] ; then
+                sudo localedef -f ISO-8859-1 -i en_US en_US.ISO8859-1
+              fi
+              export LANG=en_US.ISO8859-1
+              export LC_ALL=en_US.ISO8859-1
+              if yamllint cp1252.yml ; then
+                echo "XFAIL: cp1252.yml on macOS/Linux en_US.ISO8859-1"
+              else
+                echo "XPASS: cp1252.yml on macOS/Linux en_US.ISO8859-1"
+                exit 50
+              fi
+            fi
