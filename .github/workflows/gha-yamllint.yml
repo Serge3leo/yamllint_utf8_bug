@@ -43,6 +43,8 @@ jobs:
             fi
           else
             yamllint greek.yml
+            echo "OK: greek.yml on macOS/Linux UTF-8"
+
             if [ "${{ matrix.os }}" == "ubuntu" ] ; then
               sudo localedef -f CP1251 -i ru_RU ru_RU.CP1251
             fi
@@ -54,10 +56,10 @@ jobs:
                        print(locale.getlocale(), \
                              locale.getpreferredencoding())"
             if yamllint greek.yml ; then
-              echo "XPASS: ru_RU.CP1251"
+              echo "XPASS: greek.yml on macOS/Linux ru_RU.CP1251"
               exit 20
             else
-              echo "XFAIL: ru_RU.CP1251"
+              echo "XFAIL: greek.yml on macOS/Linux ru_RU.CP1251"
             fi
           fi
 
@@ -74,12 +76,16 @@ jobs:
             if yamllint cp1252.yml ; then
               echo "FAIL: cp1252.yml on macOS/Linux UTF-8"
               exit 40
+            else
+              echo "OK: cp1252.yml on macOS/Linux UTF-8"
             fi
+
             if [ "${{ matrix.os }}" == "ubuntu" ] ; then
               sudo localedef -f ISO-8859-1 -i en_US en_US.ISO8859-1
             fi
             export LANG=en_US.ISO8859-1
             export LC_ALL=en_US.ISO8859-1
+
             if yamllint cp1252.yml ; then
               echo "XFAIL: cp1252.yml on macOS/Linux en_US.ISO8859-1"
             else
